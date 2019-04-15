@@ -176,6 +176,11 @@ public class ReservationApiV2Controller {
         var res = reservationController.showConfirmationPage(eventName, reservationId, false, false,
             model, locale, request);
         model.addAttribute("viewState", res);
+        var ticketsByCategory = (List<Pair<TicketCategory, List<TicketDecorator>>>) model.asMap().get("ticketsByCategory");
+        if (ticketsByCategory != null) {
+            model.addAttribute("ticketsByCategory", ticketsByCategory.stream().map(a -> new TicketsByTicketCategory(a.getKey(), a.getValue())).collect(Collectors.toList()));
+        }
+
         return new ResponseEntity<>(model.asMap(), HttpStatus.OK);
     }
 
