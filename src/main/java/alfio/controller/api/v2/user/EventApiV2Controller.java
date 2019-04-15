@@ -17,6 +17,7 @@
 package alfio.controller.api.v2.user;
 
 import alfio.controller.EventController;
+import alfio.controller.api.v2.user.model.BasicEventInfo;
 import alfio.controller.api.v2.user.model.EventWithAdditionalInfo;
 import alfio.controller.api.v2.user.model.TicketCategories;
 import alfio.controller.api.v2.user.model.TicketCategory;
@@ -67,13 +68,13 @@ public class EventApiV2Controller {
     private final TicketCategoryDescriptionRepository ticketCategoryDescriptionRepository;
 
 
-    @GetMapping("tmp/events")
-    public ResponseEntity<Map<String, ?>> listEvents(Model model, HttpServletRequest request) {
-        if(!"/event/event-list".equals(eventController.listEvents(model, Locale.ENGLISH))) {
-            model.addAttribute("singleEvent", true);
-            model.addAttribute("eventShortName", eventManager.getPublishedEvents().get(0).getShortName());
-        }
-        return new ResponseEntity<>(model.asMap(), getCorsHeaders(), HttpStatus.OK);
+    @GetMapping("events")
+    public ResponseEntity<List<BasicEventInfo>> listEvents(Model model, HttpServletRequest request) {
+        var events = eventManager.getPublishedEvents()
+            .stream()
+            .map(e -> new BasicEventInfo(e.getShortName(), e.getFileBlobId(), e.getDisplayName(), e.getLocation()))
+            .collect(Collectors.toList());
+        return new ResponseEntity<>(events, getCorsHeaders(), HttpStatus.OK);
     }
 
     @GetMapping("event/{eventName}")
