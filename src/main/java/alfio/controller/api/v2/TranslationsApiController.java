@@ -50,6 +50,8 @@ public class TranslationsApiController {
         var locale = new Locale(lang);
         return messageSource.getKeys(baseName, locale)
             .stream()
-            .collect(Collectors.toMap(Function.identity(), k -> messageSource.getMessage(k, EMPTY_ARRAY, locale)));
+            .collect(Collectors.toMap(Function.identity(), k -> messageSource.getMessage(k, EMPTY_ARRAY, locale)
+                //replace all placeholder {0} -> {{0}} so it can be consumed by ngx-translate
+                .replaceAll("\\{(\\d+)\\}", "{{$1}}")));
     }
 }
