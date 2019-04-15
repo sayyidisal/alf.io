@@ -88,4 +88,8 @@ public class EventWithAdditionalInfo {
     public String getTermsAndConditionsUrl() {
         return event.getTermsAndConditionsUrl();
     }
+
+    public String getCurrency() {
+        return event.getCurrency();
+    }
 }
