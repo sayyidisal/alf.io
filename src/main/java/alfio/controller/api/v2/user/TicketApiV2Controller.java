@@ -19,13 +19,8 @@ package alfio.controller.api.v2.user;
 import alfio.controller.TicketController;
 import alfio.controller.api.v2.user.model.TicketInfo;
 import alfio.manager.TicketReservationManager;
-import alfio.model.Event;
-import alfio.model.Ticket;
-import alfio.model.TicketCategory;
-import alfio.model.TicketReservation;
 import alfio.repository.TicketCategoryRepository;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +31,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
