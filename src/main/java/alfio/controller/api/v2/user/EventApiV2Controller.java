@@ -69,7 +69,7 @@ public class EventApiV2Controller {
 
 
     @GetMapping("events")
-    public ResponseEntity<List<BasicEventInfo>> listEvents(Model model, HttpServletRequest request) {
+    public ResponseEntity<List<BasicEventInfo>> listEvents() {
         var events = eventManager.getPublishedEvents()
             .stream()
             .map(e -> new BasicEventInfo(e.getShortName(), e.getFileBlobId(), e.getDisplayName(), e.getLocation()))

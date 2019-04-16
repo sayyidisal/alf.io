@@ -26,4 +26,8 @@ public class TicketInfo {
     private final String fullName;
     private final String email;
     private final String uuid;
+
+    private final String ticketCategoryName;
+    private final String reservationFullName;
+    private final String reservationId;
 }

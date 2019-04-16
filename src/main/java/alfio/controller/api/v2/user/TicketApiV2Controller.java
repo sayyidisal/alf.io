@@ -21,6 +21,7 @@ import alfio.controller.api.v2.user.model.TicketInfo;
 import alfio.manager.TicketReservationManager;
 import alfio.repository.TicketCategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -50,30 +48,29 @@ public class TicketApiV2Controller {
     }
 
 
-    @GetMapping("/tmp/event/{eventName}/ticket/{ticketIdentifier}")
-    public Map<String, Object> getTicketInfo(@PathVariable("eventName") String eventName,
-                                             @PathVariable("ticketIdentifier") String ticketIdentifier) {
+    @GetMapping("/event/{eventName}/ticket/{ticketIdentifier}")
+    public ResponseEntity<TicketInfo> getTicketInfo(@PathVariable("eventName") String eventName,
+                                                    @PathVariable("ticketIdentifier") String ticketIdentifier) {
 
         //TODO: cleanup, we load useless data here!
 
         var oData = ticketReservationManager.fetchCompleteAndAssigned(eventName, ticketIdentifier);
         if(oData.isEmpty()) {
-            return Collections.emptyMap();
+            return ResponseEntity.notFound().build();
         }
         var data = oData.get();
 
 
         var ticketCategory = ticketCategoryRepository.getByIdAndActive(data.getRight().getCategoryId(), data.getLeft().getId());
 
-        var res = new HashMap<String, Object>();
-
         var ticket = data.getRight();
-        res.put("ticket", new TicketInfo(ticket.getFullName(), ticket.getEmail(), ticket.getUuid()));
-        res.put("ticketCategoryName", ticketCategory.getName());
-        res.put("reservationFullName", data.getMiddle().getFullName());
-        res.put("reservationId", ticketReservationManager.getShortReservationID(data.getLeft(), data.getMiddle()));
 
-        return res;
+        var ticketInfo = new TicketInfo(ticket.getFullName(), ticket.getEmail(), ticket.getUuid(),
+            ticketCategory.getName(),
+            data.getMiddle().getFullName(),
+            ticketReservationManager.getShortReservationID(data.getLeft(), data.getMiddle()));
+
+        return ResponseEntity.ok(ticketInfo);
     }
 
 }
